@@ -21,26 +21,23 @@ app.get("/", function (req, res) {
 
 
 const checkTime = (req, res) => {
-  const _date = req.params.date;
-  let output = { "unix": 0, "utc": "" };
 
-  if (!_date) {
-    let current = new Date();
-    output = { "unix": current.getTime(), "utc": current.toUTCString() };
+  // CHECK TYPE OF DATE 
+  const isNumeric = /^\d*$/.test(req.params.date);
+
+  // GENERATE DATE
+  let date = (isNumeric) ? new Date().setTime(isNumeric) : new Date(req.params.date);
+
+  // INVALID DATE
+  if (!date.getTime()) {
+    res.json({ error: "Invalid Date" });
   }
   else {
-    const i = _date * 1;  // CHECK IF IS A STRING 
-    let response = isNaN(i) ? new Date(_date) : new Date(i);
-
-    // CHECK VALID DATE
-    if (response instanceof Date) {
-      output = { "unix": response.getTime(), "utc": response.toUTCString() };
-    }
-    else {
-      output['utc'] = 'invalid date';
-    }
+    res.json({
+      unix: date.getTime(),
+      utc: date.toUTCString()
+    });
   }
-  res.json(output);
 };
 
 
