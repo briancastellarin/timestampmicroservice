@@ -24,13 +24,17 @@ const checkTime = (req, res) => {
 
   // CHECK TYPE OF DATE 
   const isNumeric = /^\d*$/.test(req.params.date);
-
+   
   // GENERATE DATE
-  let date = (isNumeric) ? new Date().setTime(isNumeric) : new Date(req.params.date);
+  let date = (isNumeric) ? new Date() : new Date(req.params.date);
 
+  if(isNumeric){
+    date.setTime(req.params.date);
+  }
+  
   // INVALID DATE
-  if (!date.getTime()) {
-    res.json({ error: "Invalid Date" });
+  if (date.toString() === 'Invalid Date') {
+    res.json({ error: date.toString()});
   }
   else {
     res.json({
